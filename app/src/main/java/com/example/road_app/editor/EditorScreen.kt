@@ -28,6 +28,12 @@ fun EditorScreen(
             sceneObjects = sceneObjects,
             cameraState = cameraState,
             selectedObjectId = selectedId,
+            onSelectObject = { viewModel.selectObject(it) },
+            onMoveObject = { id, x, y -> viewModel.moveObject(id, x, y) },
+            onRotateObject = { id, rotation -> viewModel.rotateObject(id, rotation) },
+            onScaleObject = { id, scale -> viewModel.scaleObject(id, scale) },
+            onPanCamera = { dx, dy -> viewModel.panCamera(dx, dy) },
+            onZoomCamera = { cx, cy, factor -> viewModel.zoomCamera(cx, cy, factor) },
             modifier = Modifier.fillMaxSize()
         )
 
