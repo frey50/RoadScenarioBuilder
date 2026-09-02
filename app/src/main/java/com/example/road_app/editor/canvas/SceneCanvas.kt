@@ -10,16 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.drawscope.translate
 import com.example.road_app.data.model.Arrow
-import com.example.road_app.data.model.Car
 import com.example.road_app.data.model.CameraState
+import com.example.road_app.data.model.Car
 import com.example.road_app.data.model.FreeformPath
 import com.example.road_app.data.model.RoadSegment
 import com.example.road_app.data.model.SceneObject
 import com.example.road_app.data.model.Sign
-// import com.example.road_app.editor.manipulables.ManipulableObject
-import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.graphics.drawscope.translate
+import com.example.road_app.editor.manipulables.ManipulableObject
 
 @Composable
 fun SceneCanvas(
@@ -42,14 +42,14 @@ fun SceneCanvas(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Canvas for roads, grid, freeform paths
+        // Canvas for roads + grid ONLY
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF1A1A2E))
                 .canvasGestures(
                     cameraState = cameraState,
-                    roadObjects = sceneObjects, // Pass all objects for hit testing
+                    roadObjects = roadObjects, // ✅ Only roads for Canvas hit testing
                     selectedId = selectedObjectId,
                     onSelectObject = onSelectObject,
                     onMoveObject = onMoveObject,
@@ -60,7 +60,7 @@ fun SceneCanvas(
             translate(left = cameraState.offsetX, top = cameraState.offsetY) {
                 scale(scaleX = cameraState.zoom, scaleY = cameraState.zoom, pivot = Offset.Zero) {
                     drawGrid()
-                    sceneObjects.sortedBy { it.layer }.forEach { obj ->
+                    roadObjects.sortedBy { it.layer }.forEach { obj ->
                         drawSceneObject(obj, isSelected = obj.id == selectedObjectId)
                     }
                 }
@@ -68,17 +68,17 @@ fun SceneCanvas(
         }
 
         // Overlay composables for cars, signs, arrows
-        // manipulableObjects.forEach { obj ->
-        //    ManipulableObject(
-        //        obj = obj,
-        //        isSelected = obj.id == selectedObjectId,
-        //        cameraState = cameraState,
-        //        onSelect = { onSelectObject(obj.id) },
-        //        onMove = { x, y -> onMoveObject(obj.id, x, y) },
-        //        onRotate = { rotation -> onRotateObject(obj.id, rotation) },
-        //        onScale = { scale -> onScaleObject(obj.id, scale) }
-        //    )
-        // }
+        manipulableObjects.forEach { obj ->
+            ManipulableObject(
+                obj = obj,
+                isSelected = obj.id == selectedObjectId,
+                cameraState = cameraState,
+                onSelect = { onSelectObject(obj.id) },
+                onMove = { x, y -> onMoveObject(obj.id, x, y) },
+                onRotate = { rotation -> onRotateObject(obj.id, rotation) },
+                onScale = { scale -> onScaleObject(obj.id, scale) }
+            )
+        }
     }
 }
 
