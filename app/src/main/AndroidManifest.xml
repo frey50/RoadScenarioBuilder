@@ -11,12 +11,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Roadapp">
+        android:theme="@style/Theme.RoadScenarioBuilder">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Roadapp"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize|smallestScreenSize"
+            android:theme="@style/Theme.RoadScenarioBuilder"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
