@@ -1,38 +1,41 @@
 package com.example.road_app.editor
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.road_app.editor.canvas.SceneCanvas
 
 @Composable
 fun EditorScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: EditorViewModel = viewModel()
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Editor",
-            style = MaterialTheme.typography.headlineMedium
+    val sceneObjects by viewModel.sceneObjects.collectAsState()
+    val cameraState by viewModel.cameraState.collectAsState()
+    val selectedId by viewModel.selectedObjectId.collectAsState()
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        SceneCanvas(
+            sceneObjects = sceneObjects,
+            cameraState = cameraState,
+            selectedObjectId = selectedId,
+            modifier = Modifier.fillMaxSize()
         )
-        Text(
-            text = "Road scenario editor canvas will go here",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+
         Button(
             onClick = onBack,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
         ) {
             Text("Back to List")
         }

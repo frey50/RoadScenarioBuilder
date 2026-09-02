@@ -1,18 +1,20 @@
 package com.example.road_app.editor
 
 import androidx.lifecycle.ViewModel
+import com.example.road_app.data.model.Arrow
 import com.example.road_app.data.model.CameraState
 import com.example.road_app.data.model.Car
+import com.example.road_app.data.model.ConnectorPoint
 import com.example.road_app.data.model.FreeformPath
 import com.example.road_app.data.model.RoadSegment
+import com.example.road_app.data.model.RoadSegmentKind
 import com.example.road_app.data.model.SceneObject
 import com.example.road_app.data.model.Sign
-import com.example.road_app.data.model.Arrow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class EditorViewModel : ViewModel() {
+class EditorViewModel(seedData: Boolean = true) : ViewModel() {
 
     private val _sceneObjects = MutableStateFlow<List<SceneObject>>(emptyList())
     val sceneObjects: StateFlow<List<SceneObject>> = _sceneObjects.asStateFlow()
@@ -27,6 +29,58 @@ class EditorViewModel : ViewModel() {
     private val undoStack = ArrayDeque<List<SceneObject>>()
     private val redoStack = ArrayDeque<List<SceneObject>>()
     private val maxUndoSize = 50
+
+    init {
+        if (seedData) {
+            seedTestData()
+        }
+    }
+
+    private fun seedTestData() {
+        _sceneObjects.value = listOf(
+            RoadSegment(
+                id = "road1",
+                x = 400f,
+                y = 300f,
+                segmentKind = RoadSegmentKind.STRAIGHT,
+                connectorPoints = listOf(
+                    ConnectorPoint(0f, -50f),
+                    ConnectorPoint(0f, 50f)
+                )
+            ),
+            RoadSegment(
+                id = "road2",
+                x = 650f,
+                y = 300f,
+                segmentKind = RoadSegmentKind.FOUR_WAY,
+                connectorPoints = listOf(
+                    ConnectorPoint(-100f, 0f),
+                    ConnectorPoint(100f, 0f),
+                    ConnectorPoint(0f, -100f),
+                    ConnectorPoint(0f, 100f)
+                )
+            ),
+            Car(
+                id = "car1",
+                x = 400f,
+                y = 250f,
+                rotation = 0f,
+                carType = "sedan"
+            ),
+            Sign(
+                id = "sign1",
+                x = 320f,
+                y = 200f,
+                signType = "stop"
+            ),
+            Arrow(
+                id = "arrow1",
+                x = 520f,
+                y = 380f,
+                rotation = 45f
+            )
+        )
+    }
 
     // ─── Scene Object Operations ───
 
